@@ -149,6 +149,50 @@ Node * Tree :: relationHelp(Node * root, string name, int level)
 }
 
 
+ string Tree :: find(string name)
+ {
+     int size = getSize(root);
+     string s [size];
+     fillArray(root, s);
+
+    for (size_t i = 0; i < size; i++)
+    {
+        string rel = this->relation(s[i]);
+            if(rel == name)
+            {
+                return s[i];
+            }
+    }
+    throw runtime_error("No such a " + name);
+ }
+
+static int place = 0;
+
+ string * Tree :: fillArray(Node * root, string * s)
+ {
+    if(root != NULL)
+    {
+        fillArray(root->getFather(), s);
+        s[place++] = root->getName();
+        fillArray(root->getMother(), s);
+    }
+    return s;
+ }
+
+
+int Tree :: getSize(Node * root)
+{  
+    if (root == NULL)
+    {
+        return 0;  
+    }
+    else
+    {
+        return(getSize(root->getFather()) + 1 + getSize(root->getMother()));  
+    }
+} 
+
+
 
 
 void Tree :: display()
@@ -176,7 +220,8 @@ int main()
 
     T.display();
     cout << endl;
-    cout << T.relation("Ahuva") << endl;
+    //cout << T.relation("Ahuva") << endl;
+    cout << T.find("great-great-grandfather") << endl;
 }
 
 
