@@ -40,7 +40,7 @@ TEST_CASE("Test 1 addFather & addMother & relation") {
 //     CHECK(T.relation("Eva") == string("unrelated"));
 //     CHECK(T.relation("Shimon") == string("unrelated"));
 //     CHECK(T.relation("Yossi") == string("unrelated"));
-// }
+ }
 
 // TEST_CASE("Test 1 find") {
 
