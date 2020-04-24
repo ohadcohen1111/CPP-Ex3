@@ -2,7 +2,11 @@
     "files.associations": {
         "stdexcept": "cpp",
         "ostream": "cpp",
+<<<<<<< HEAD
         "typeinfo": "cpp",
         "new": "cpp"
+=======
+        "unordered_map": "cpp"
+>>>>>>> dae55d1935fb83ccc3a62ceb73f381914c66b783
     }
 }

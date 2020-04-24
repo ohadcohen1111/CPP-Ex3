@@ -196,7 +196,8 @@ void Tree ::remove(string name)
 { 
     if(root->getName() == name)
     {
-        throw runtime_error ("root can't be remove");
+        throw runtime_error ("not exists");
+
     }
     Node *t = findNode(root,name);
     if (t != NULL)

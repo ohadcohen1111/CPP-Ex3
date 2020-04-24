@@ -90,9 +90,11 @@ class Tree
         void display();
         void display(Node * root);
         void remove(string name);
+
         int getSize(Node * root);
         void del(Node *t);
         void delNode(Node *t, string name);
         string * fillArray(Node * root, string * s);
+
     };
 };
