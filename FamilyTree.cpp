@@ -6,7 +6,9 @@ using namespace family;
 Tree :: Tree(string name)
 {
     root = new Node(name);
+    root->setRel("me");
 }
+
 
 Tree &Tree :: addFather(string child, string father)
 {
@@ -18,6 +20,8 @@ Tree &Tree :: addFather(string child, string father)
         {
             Node * f = new Node(father);
             f->setGender("M");
+            f->setLevel(n->getLevel()+1);
+            f->setRel(f->getGender(), f->getLevel());
             n->setFather(f);
             return *this;
         }
@@ -36,6 +40,8 @@ Tree &Tree :: addMother(string child, string mother)
         {
             Node * m = new Node(mother);
             m->setGender("F");
+            m->setLevel(n->getLevel()+1);
+            m->setRel(m->getGender(), m->getLevel());
             n->setMother(m);
             return *this;
         }
@@ -55,8 +61,6 @@ Node * Tree :: findNode(Node * n, string name)
     {
         return n;
     }
-
-
     Node * father = findNode(n->getFather(), name);
 
     if(father != NULL)
@@ -83,7 +87,7 @@ string Tree :: relation(string name)
         return "mother";
     }
     
-    Node * n = relationHelp(root, name, 0);
+    Node * n = Help(root, name,0);
 
     if(n == NULL)
     {
@@ -91,13 +95,6 @@ string Tree :: relation(string name)
     }
 
     int level = n->getLevel();
-    // int sign = 0;
-    // if(level < 0)
-    // {
-    //     sign = 1;
-    //     level = ((-1) * level);
-    // }
-
     string ans = "";
     while(level-- > 3)
     {
@@ -114,8 +111,7 @@ string Tree :: relation(string name)
 
     return ans; 
 }
-
-Node * Tree :: relationHelp(Node * root, string name, int level)
+Node * Tree :: Help(Node * root, string name, int level)
 {
     if(root == NULL)
     {
@@ -139,61 +135,46 @@ Node * Tree :: relationHelp(Node * root, string name, int level)
         return root;
     }
 
-    Node * father = relationHelp(root->getFather(), name, level + 1);
+    Node * father = Help(root->getFather(), name, level + 1);
 
     if(father != NULL)
     {
         return father;
     }
-    return relationHelp(root->getMother(), name, level + 1);
+    return Help(root->getMother(), name, level + 1);
+}
+
+Node * Tree :: relationHelp(Node * n, string relation)
+{
+     if(n == NULL)
+    {
+        return NULL;
+    }
+
+    if(n->getRel() == relation)
+    {
+        return n;
+    }
+    Node * father = relationHelp(n->getFather(), relation);
+
+    if(father != NULL)
+    {
+        return father;
+    }
+    return relationHelp(n->getMother(), relation);
 }
 
 
  string Tree :: find(string name)
  {
-     int size = getSize(root);
-     string s [size];
-     fillArray(root, s);
+    Node* c = relationHelp(root, name);
 
-    for (size_t i = 0; i < size; i++)
+    if(c!= NULL)
     {
-        string rel = this->relation(s[i]);
-            if(rel == name)
-            {
-                return s[i];
-            }
+        return c->getName();
     }
-    throw runtime_error("No such a " + name);
+    throw std::runtime_error("No such relation!"); 
  }
-
-static int place = 0;
-
- string * Tree :: fillArray(Node * root, string * s)
- {
-    if(root != NULL)
-    {
-        fillArray(root->getFather(), s);
-        s[place++] = root->getName();
-        fillArray(root->getMother(), s);
-    }
-    return s;
- }
-
-
-int Tree :: getSize(Node * root)
-{  
-    if (root == NULL)
-    {
-        return 0;  
-    }
-    else
-    {
-        return(getSize(root->getFather()) + 1 + getSize(root->getMother()));  
-    }
-} 
-
-
-
 
 void Tree :: display()
 {
@@ -211,18 +192,53 @@ void Tree :: display(Node * root)
     return;
 }
 
-int main()
-{
-    Tree T ("Shalom");
-    T.addFather("Shalom", "Aharon").addMother("Shalom", "Yafa");
-    T.addMother("Yafa", "Ahuva").addMother("Ahuva", "Miriam");
-    T.addFather("Miriam", "Moshe");
-
-    T.display();
-    cout << endl;
-    //cout << T.relation("Ahuva") << endl;
-    cout << T.find("great-great-grandfather") << endl;
+void Tree ::remove(string name)
+{ 
+    if(root->getName() == name)
+    {
+        throw runtime_error ("root can't be remove");
+    }
+    Node *t = findNode(root,name);
+    if (t != NULL)
+    {
+        del(t);
+        delNode(root,name);
+        return;
+    }
+    throw runtime_error ("not exists");
+    return;
 }
-
-
-
+void Tree ::delNode(Node *t, string name)
+{
+    if (t != NULL)
+    {
+        delNode(t->getFather(), name);
+        delNode(t->getMother(),name);
+        if(t->getFather() != NULL  && t->getFather()->getName() == name)
+        {     
+             t->setFather(NULL);
+        }
+        if (t->getMother() != NULL && t->getMother()->getName() == name)
+        {
+            t->setMother(NULL);   
+        }      
+    }
+    return;
+}
+void Tree ::del(Node *t)
+{
+    if (t != NULL)
+    {
+        del(t->getFather());
+        del(t->getMother());
+        if(t->getFather() != NULL )
+        {     
+             t->setFather(NULL);
+        }
+        if (t->getMother() != NULL )
+        {
+            t->setMother(NULL);   
+        }      
+    }
+    return;
+}

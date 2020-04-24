@@ -12,6 +12,7 @@ namespace family
         Node * mother;
         string gender;
         int level;
+        string rel = "";
 
     public:
         //constructor
@@ -21,7 +22,8 @@ namespace family
             this->father = NULL;
             this->mother = NULL;
             this->gender = "";
-            this->level = 0;
+            this->level = 1;
+            this->rel = "";
         }
 
         //get
@@ -30,6 +32,8 @@ namespace family
         string getName(){return this->name;};
         string getGender(){return this->gender;};  
         int getLevel(){return this->level;};
+        string getRel(){return this->rel;};  
+
 
         //set
         void setName(string name){this->name = name;};
@@ -37,6 +41,36 @@ namespace family
         void setMother(Node * mother){this->mother = mother;};
         void setLevel(int level){this->level = level;};
         void setGender(string gender){this->gender = gender;};
+         void setRel(string s){this->rel = s;};
+        void setRel(string g, int level)
+        {  
+            if ( g == "M" && level == 2 )
+            {
+                this->rel = "father";
+                return;
+            }else if (level == 2)
+            {
+                this->rel =  "mother";
+                return;
+            }
+            else if(g != "M" && g != "F"){
+                throw runtime_error("not exists");
+            }
+            string res= "";
+            while (level-- >3)
+            {
+                res+="great-";
+            }
+            if ( g == "M")
+            {
+                res+="grandfather";
+                rel=res;
+                return;
+            }
+            res+="grandmother";
+            rel=res;  
+   
+        }   
     };
 
 class Tree
@@ -50,12 +84,15 @@ class Tree
         Tree &addMother(string child, string mother);
         Node * findNode(Node * n, string name);
         string relation(string name);
-        Node * relationHelp(Node * root, string name, int level);
+        Node * Help(Node * root, string name, int level);
+        Node * relationHelp(Node * n, string name);
         string find(string name);
         void display();
         void display(Node * root);
         void remove(string name);
         int getSize(Node * root);
+        void del(Node *t);
+        void delNode(Node *t, string name);
         string * fillArray(Node * root, string * s);
     };
 };
